@@ -116,7 +116,7 @@ if __name__ == "__main__":
     if path:
         train_phrasebank(path, agreement="AllAgree", epochs=3, batch_size=32, lr=1e-3)
     else:
-        if typer is None:
+        if typer is None or app is None:
             print("Typer not installed. Install with: pip install typer")
             print("Or set PHRASEBANK_PATH and run this file directly.")
         else:

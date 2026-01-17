@@ -120,7 +120,7 @@ else:
 
 
 if __name__ == "__main__":
-    if typer is None:
+    if typer is None or app is None:
         print("Typer not installed. Install with: pip install typer")
     else:
         app()

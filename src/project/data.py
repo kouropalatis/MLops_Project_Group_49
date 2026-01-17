@@ -121,8 +121,8 @@ class FinancialPhraseBankDataset(Dataset):
 
 
 def preprocess(
-    data_path: Union[str, Path],
-    output_folder: Union[str, Path],
+    data_path: str,
+    output_folder: str,
     agreement: Literal["AllAgree", "75Agree", "66Agree", "50Agree"] = "AllAgree",
 ) -> None:
     """CLI entry to preprocess Financial Phrase Bank data only.
