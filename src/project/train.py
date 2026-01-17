@@ -1,5 +1,5 @@
 import os
-from typing import Tuple
+from typing import Tuple, Optional
 
 import torch
 from torch.utils.data import DataLoader
@@ -14,10 +14,23 @@ def train_phrasebank(
     epochs: int = 2,
     batch_size: int = 32,
     lr: float = 1e-3,
+    num_workers: int = 2,
+    pin_memory: bool = True,
+    persistent_workers: bool = True,
+    prefetch_factor: Optional[int] = 2,
 ) -> None:
     ds = FinancialPhraseBankDataset(root_path, agreement=agreement)  # e.g., F:\Business Analytics Dk\MLOps\FinancialPhraseBank-v1.0
     vocab = ds.build_vocab(min_freq=1)
-    loader = DataLoader(ds, batch_size=batch_size, shuffle=True, collate_fn=ds.collate_fn)
+    loader = DataLoader(
+        ds,
+        batch_size=batch_size,
+        shuffle=True,
+        collate_fn=ds.collate_fn,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        persistent_workers=persistent_workers if num_workers > 0 else False,
+        prefetch_factor=prefetch_factor if (num_workers > 0 and prefetch_factor is not None) else None,
+    )
 
     model = TextSentimentModel(vocab_size=len(vocab), embedding_dim=64, num_classes=3)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
