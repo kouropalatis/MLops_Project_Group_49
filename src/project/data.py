@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Iterable, List, Literal, Sequence, Tuple, Union
+from typing import Dict, List, Literal, Sequence, Tuple, Union
 
 import torch
 import typer
@@ -7,11 +7,11 @@ from torch.utils.data import Dataset
 
 
 class MyDataset(Dataset):
-    """Minimal dataset that produces scalar samples.
+    """Minimal numeric dataset used for tests and simple demos.
 
-    - Loads numeric samples from text files under `data_path` (one number per line).
-    - If no raw files are present, it generates a small synthetic dataset.
-    - Returns pairs `(x, y)` where `y == x` for a simple regression toy task.
+    - Loads numbers from `data_path/**/*.txt` (one float per line).
+    - Falls back to synthetic `[0..99]` if none are found.
+    - Returns `(x, y)` where `y == x` for toy regression.
     """
 
     def __init__(self, data_path: Union[str, Path]) -> None:
@@ -27,10 +27,8 @@ class MyDataset(Dataset):
                     try:
                         self._xs.append(float(line))
                     except ValueError:
-                        # Skip non-numeric lines to stay robust
                         continue
 
-        # Fallback: create a tiny synthetic dataset
         if not self._xs:
             self._xs = [float(i) for i in range(100)]
 
@@ -38,16 +36,11 @@ class MyDataset(Dataset):
         return len(self._xs)
 
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor]:
-        x = torch.tensor([self._xs[index]], dtype=torch.float32)  # shape (1,)
-        y = x.clone()  # simple identity target
+        x = torch.tensor([self._xs[index]], dtype=torch.float32)
+        y = x.clone()
         return x, y
 
     def preprocess(self, output_folder: Union[str, Path]) -> None:
-        """Preprocess raw data and save to `output_folder`.
-
-        For this toy example, we simply serialize the numeric samples
-        to a `dataset.pt` file so downstream steps can load quickly.
-        """
         out_dir = Path(output_folder)
         out_dir.mkdir(parents=True, exist_ok=True)
         torch.save(self._xs, out_dir / "dataset.pt")
@@ -57,13 +50,10 @@ SentimentLabel = Literal["negative", "neutral", "positive"]
 
 
 class FinancialPhraseBankDataset(Dataset):
-    """Financial Phrase Bank dataset loader.
+    """Loader for Financial Phrase Bank v1.0.
 
-    Expects files like `Sentences_AllAgree.txt`, `Sentences_75Agree.txt`,
-    `Sentences_66Agree.txt`, `Sentences_50Agree.txt` in `root_path`.
-
-    Each line format: `sentence@sentiment` where sentiment is one of
-    `positive|neutral|negative`.
+    Reads one of the `Sentences_*Agree.txt` files under `root_path`.
+    Each line: `sentence@sentiment` where sentiment ∈ {negative, neutral, positive}.
     """
 
     AGREEMENTS: Dict[str, str] = {
@@ -85,20 +75,16 @@ class FinancialPhraseBankDataset(Dataset):
         agreement: Literal["AllAgree", "75Agree", "66Agree", "50Agree"] = "AllAgree",
     ) -> None:
         self.root_path = Path(root_path)
-        filename = self.AGEMENTS_FILE(agreement)
+        filename = self._agreement_file(agreement)
         file_path = self.root_path / filename
         if not file_path.exists():
             raise FileNotFoundError(f"Expected dataset file not found: {file_path}")
 
         self.sentences: List[str] = []
         self.labels: List[int] = []
-
         for line in file_path.read_text(encoding="utf-8").splitlines():
             line = line.strip()
-            if not line:
-                continue
-            # Split by last '@' in case sentence has '@' inside
-            if "@" not in line:
+            if not line or "@" not in line:
                 continue
             sent, lab = line.rsplit("@", 1)
             lab = lab.strip().lower()
@@ -107,17 +93,13 @@ class FinancialPhraseBankDataset(Dataset):
             self.sentences.append(sent.strip())
             self.labels.append(self.SENTIMENT_TO_ID[lab])
 
-        # Vocabulary built lazily; use preprocess/build_vocab for speed
         self.vocab: Dict[str, int] = {}
 
     @classmethod
-    def AGEMENTS_FILE(cls, agreement: str) -> str:
-        # helper to map agreement to filename safely
+    def _agreement_file(cls, agreement: str) -> str:
         fname = cls.AGREEMENTS.get(agreement)
         if not fname:
-            raise ValueError(
-                f"Invalid agreement '{agreement}'. Choose one of {list(cls.AGREEMENTS.keys())}"
-            )
+            raise ValueError(f"Invalid agreement '{agreement}'. Choose one of {list(cls.AGREEMENTS.keys())}")
         return fname
 
     def __len__(self) -> int:
@@ -127,11 +109,6 @@ class FinancialPhraseBankDataset(Dataset):
         return self.sentences[index], self.labels[index]
 
     def build_vocab(self, min_freq: int = 1) -> Dict[str, int]:
-        """Builds a token-level vocabulary from the dataset.
-
-        Returns a dict mapping token -> index with special tokens:
-        PAD=0, UNK=1, and words start from index 2.
-        """
         freq: Dict[str, int] = {}
         for s in self.sentences:
             for tok in self.simple_tokenize(s):
@@ -156,12 +133,6 @@ class FinancialPhraseBankDataset(Dataset):
         return [self.vocab.get(tok, 1) for tok in self.simple_tokenize(text)]
 
     def collate_fn(self, batch: Sequence[Tuple[str, int]]) -> Tuple[torch.Tensor, torch.Tensor]:
-        """Collate function to turn a batch of (text, label) into padded tensors.
-
-        Returns:
-            inputs: LongTensor of shape [B, T]
-            labels: LongTensor of shape [B]
-        """
         encoded: List[List[int]] = [self.encode(text) for text, _ in batch]
         labels: List[int] = [lab for _, lab in batch]
         max_len = max((len(seq) for seq in encoded), default=1)
@@ -171,10 +142,6 @@ class FinancialPhraseBankDataset(Dataset):
         return inputs, targets
 
     def preprocess(self, output_folder: Union[str, Path], agreement: str = "AllAgree") -> None:
-        """Preprocess and cache encoded dataset for faster training.
-
-        Saves `phrasebank_<agreement>.pt` with a dict containing `vocab`, `inputs`, `labels`.
-        """
         out_dir = Path(output_folder)
         out_dir.mkdir(parents=True, exist_ok=True)
         if not self.vocab:
@@ -191,10 +158,10 @@ def preprocess(
     output_folder: Union[str, Path],
     agreement: Literal["AllAgree", "75Agree", "66Agree", "50Agree"] = "AllAgree",
 ) -> None:
-    """CLI entry to preprocess either numeric or phrasebank data.
+    """CLI entry to preprocess data.
 
-    If `data_path` points to FinancialPhraseBank root containing `Sentences_*.txt`,
-    we preprocess the phrasebank; otherwise we fallback to numeric dataset.
+    If `data_path` contains any `Sentences_*Agree.txt`, preprocess PhraseBank;
+    otherwise, preprocess the numeric toy dataset.
     """
     print("Preprocessing data...")
     data_root = Path(data_path)
