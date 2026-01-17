@@ -1,4 +1,3 @@
-import torch
 from torch.utils.data import DataLoader
 
 from project.data import FinancialPhraseBankDataset

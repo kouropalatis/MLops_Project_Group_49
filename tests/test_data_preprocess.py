@@ -1,4 +1,3 @@
-from pathlib import Path
 
 from project.data import preprocess, FinancialPhraseBankDataset
 
