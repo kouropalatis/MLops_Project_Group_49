@@ -88,8 +88,8 @@ if typer is not None:
         batch_size: int = typer.Option(32, "--batch-size"),
         lr: float = typer.Option(1e-3, "--lr"),
         num_workers: int = typer.Option(2, "--num-workers"),
-        pin_memory: bool = typer.Option(True, "--pin-memory"),
-        persistent_workers: bool = typer.Option(True, "--persistent-workers"),
+        pin_memory: bool = typer.Option(True, "--pin-memory/--no-pin-memory"),
+        persistent_workers: bool = typer.Option(True, "--persistent-workers/--no-persistent-workers"),
         prefetch_factor: Optional[int] = typer.Option(2, "--prefetch-factor"),
         save_path: Optional[str] = typer.Option(None, "--save-path", help="Where to save the model"),
     ):

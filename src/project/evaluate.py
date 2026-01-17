@@ -102,8 +102,8 @@ if typer is not None:
         agreement: Literal["AllAgree", "75Agree", "66Agree", "50Agree"] = typer.Option("AllAgree", "--agreement"),
         batch_size: int = typer.Option(64, "--batch-size"),
         num_workers: int = typer.Option(2, "--num-workers"),
-        pin_memory: bool = typer.Option(True, "--pin_memory"),
-        persistent_workers: bool = typer.Option(True, "--persistent-workers"),
+        pin_memory: bool = typer.Option(True, "--pin-memory/--no-pin-memory"),
+        persistent_workers: bool = typer.Option(True, "--persistent-workers/--no-persistent-workers"),
         model_path: Optional[str] = typer.Option(None, "--model-path", help="Path to saved model"),
     ):
         evaluate_phrasebank(
