@@ -1,12 +1,13 @@
-FROM ghcr.io/astral-sh/uv:python3.12-alpine AS base
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm AS base
 
-COPY uv.lock uv.lock
-COPY pyproject.toml pyproject.toml
+WORKDIR /app
 
-RUN uv sync --frozen --no-install-project
+COPY uv.lock pyproject.toml ./
 
-COPY src src/
+RUN uv sync --frozen --no-install-project --no-dev
 
-RUN uv sync --frozen
+COPY . .
 
-ENTRYPOINT ["uv", "run", "src/project/train.py"]
+RUN uv sync --frozen --no-dev
+
+ENTRYPOINT ["uv", "run", "python", "src/project/train.py"]
