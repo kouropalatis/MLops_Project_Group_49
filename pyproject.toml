@@ -12,13 +12,13 @@ authors = [
 license = { file = "LICENSE" }
 keywords = ["machine learning", "MLOps", "NLP", "Sentiment Analysis", "financial-phrasebank"]
 readme = "README.md"
-requires-python = ">=3.12"
+
 
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Programming Language :: Python :: 3",
 ]
-readme = "README.md"
+
 requires-python = ">=3.10"
 dependencies = [
     "fastapi==0.115.6",
@@ -50,7 +50,6 @@ dev = [
     "ruff==0.1.3",
     "mkdocstrings-python==1.12.2",
   "mypy==1.11.2",
-  "dvc==3.50.2",
 ]
 
 [tool.uv.sources]
