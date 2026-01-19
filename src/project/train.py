@@ -82,6 +82,7 @@ def train_phrasebank(
 
     return "Training Completed"
 
+
 if typer is not None:
     app = typer.Typer(help="Training utilities for Financial Phrase Bank")
 

@@ -23,7 +23,7 @@ class ProfilerConfig:
     # What to record
     record_shapes: bool = True
     profile_memory: bool = True  # <- this is the argument you asked about
-    with_stack: bool = False     # optional: adds call stacks (more overhead)
+    with_stack: bool = False  # optional: adds call stacks (more overhead)
 
     # Iterations: if you profile a loop, call prof.step() each iteration
     steps: int = 1
@@ -50,17 +50,11 @@ def _print_tables(prof, cfg: ProfilerConfig) -> None:
     print(prof.key_averages().table(sort_by=cfg.sort_by_time, row_limit=cfg.row_limit))
 
     print("\n=== PyTorch profiler: grouped by input shape (CPU time) ===")
-    print(
-        prof.key_averages(group_by_input_shape=True)
-        .table(sort_by=cfg.sort_by_time, row_limit=cfg.row_limit)
-    )
+    print(prof.key_averages(group_by_input_shape=True).table(sort_by=cfg.sort_by_time, row_limit=cfg.row_limit))
 
     if cfg.profile_memory:
         print("\n=== PyTorch profiler: memory (key_averages) ===")
-        print(
-            prof.key_averages()
-            .table(sort_by=cfg.sort_by_mem, row_limit=cfg.row_limit)
-        )
+        print(prof.key_averages().table(sort_by=cfg.sort_by_mem, row_limit=cfg.row_limit))
 
 
 @contextmanager

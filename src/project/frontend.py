@@ -38,9 +38,8 @@ if st.button("Start Training"):
     with st.spinner("Training in progress..."):
         try:
             response = requests.post(
-                f"{API_BASE_URL}/train",
-                json={"epochs" : epochs, "batch_size": batch_size, "lr": lr}
-                )
+                f"{API_BASE_URL}/train", json={"epochs": epochs, "batch_size": batch_size, "lr": lr}
+            )
             if response.status_code == 200:
                 st.success("Training completed!")
                 st.json(response.json())

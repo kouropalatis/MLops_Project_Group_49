@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+
 class TrainParams(BaseModel):
     epochs: int
     batch_size: int
@@ -16,12 +17,13 @@ class TrainParams(BaseModel):
 
 @app.get("/")
 def root():
-    """ Health check."""
+    """Health check."""
     response = {
         "message": HTTPStatus.OK.phrase,
         "status-code": HTTPStatus.OK,
     }
     return response
+
 
 @app.post("/train")
 def train_backend(params: TrainParams):
@@ -45,8 +47,9 @@ def train_backend(params: TrainParams):
         "message": result,
         "epochs": params.epochs,
         "batch_size": params.batch_size,
-        "lr": params.lr
+        "lr": params.lr,
     }
+
 
 # @app.get("/evaluate")
 # def evaluate_backend():
