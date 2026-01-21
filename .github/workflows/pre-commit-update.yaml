@@ -32,6 +32,11 @@ jobs:
       - name: Run pre-commit autoupdate
         run: pre-commit autoupdate
 
+      - name: Auto-format with ruff
+        run: |
+          pip install ruff
+          ruff format .
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
