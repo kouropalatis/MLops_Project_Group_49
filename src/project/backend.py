@@ -66,6 +66,10 @@ def analyze_sentiment(params: InferenceRequest):
             url=article_url,  # Pass full URL with https://
             wandb_artifact=params.wandb_artifact,
         )
+
+        # Add URL to response
+        result["url"] = article_url
+
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error analyzing sentiment: {str(e)}")
