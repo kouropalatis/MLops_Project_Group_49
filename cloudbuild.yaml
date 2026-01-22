@@ -1,0 +1,33 @@
+steps:
+  # Build backend image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'europe-north2-docker.pkg.dev/$PROJECT_ID/mlops-repos/gcp_test_app:$COMMIT_SHA'
+      - '-t'
+      - 'europe-north2-docker.pkg.dev/$PROJECT_ID/mlops-repos/gcp_test_app:latest'
+      - '-f'
+      - 'dockerfiles/backend.dockerfile'
+      - '.'
+
+  # Build frontend image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'europe-north2-docker.pkg.dev/$PROJECT_ID/mlops-repos/streamlit-frontend:$COMMIT_SHA'
+      - '-t'
+      - 'europe-north2-docker.pkg.dev/$PROJECT_ID/mlops-repos/streamlit-frontend:latest'
+      - '-f'
+      - 'dockerfiles/frontend.dockerfile'
+      - '.'
+
+images:
+  - 'europe-north2-docker.pkg.dev/$PROJECT_ID/mlops-repos/gcp_test_app:$COMMIT_SHA'
+  - 'europe-north2-docker.pkg.dev/$PROJECT_ID/mlops-repos/gcp_test_app:latest'
+  - 'europe-north2-docker.pkg.dev/$PROJECT_ID/mlops-repos/streamlit-frontend:$COMMIT_SHA'
+  - 'europe-north2-docker.pkg.dev/$PROJECT_ID/mlops-repos/streamlit-frontend:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
