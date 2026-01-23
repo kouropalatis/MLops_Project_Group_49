@@ -1,5 +1,5 @@
 # Drift monitoring job
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -10,6 +10,8 @@ RUN pip install --no-cache-dir uv
 COPY pyproject.toml .
 COPY src/ src/
 COPY data/raw/Sentences_AllAgree.txt data/raw/Sentences_AllAgree.txt
+COPY LICENSE LICENSE
+COPY README.md README.md
 
 # Install dependencies + extra monitoring deps
 RUN uv pip install --system --no-cache . sentence-transformers evidently
