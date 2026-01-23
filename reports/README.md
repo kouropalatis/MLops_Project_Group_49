@@ -56,13 +56,13 @@ will check the repositories and the code to verify your answers.
 * [x] Make sure that all team members have write access to the GitHub repository (M5)
 * [x] Create a dedicated environment for you project to keep track of your packages (M2)
 * [x] Create the initial file structure using cookiecutter with an appropriate template (M6)
-* [x] Fill out the `data.py` file such that it downloads whatever data you need and preprocesses it (if necessary) (M6) - **Arham Aziz Noman (s250173)**
-* [x] Add a model to `model.py` and a training procedure to `train.py` and get that running (M6) - **Arham Aziz Noman (s250173)**
+* [x] Fill out the `data.py` file such that it downloads whatever data you need and preprocesses it (if necessary) (M6)
+* [x] Add a model to `model.py` and a training procedure to `train.py` and get that running (M6)
 * [x] Remember to either fill out the `requirements.txt`/`requirements_dev.txt` files or keeping your
     `pyproject.toml`/`uv.lock` up-to-date with whatever dependencies that you are using (M2+M6)
 * [x] Remember to comply with good coding practices (`pep8`) while doing the project (M7)
-* [x] Do a bit of code typing and remember to document essential parts of your code (M7) - **Arham Aziz Noman (s250173)**
-* [x] Setup version control for your data or part of your data (M8) - **Arham Aziz Noman (s250173)**
+* [x] Do a bit of code typing and remember to document essential parts of your code (M7)
+* [x] Setup version control for your data or part of your data (M8)
 * [x] Add command line interfaces and project commands to your code where it makes sense (M9)
 * [x] Construct one or multiple docker files for your code (M10)
 * [x] Build the docker files locally and make sure they work as intended (M10)
@@ -76,43 +76,43 @@ will check the repositories and the code to verify your answers.
 
 ### Week 2
 
-* [x] Write unit tests related to the data part of your code (M16) - **Arham Aziz Noman (s250173)**
-* [x] Write unit tests related to model construction and or model training (M16) - **Arham Aziz Noman (s250173)**
+* [x] Write unit tests related to the data part of your code (M16) -
+* [x] Write unit tests related to model construction and or model training (M16)
 * [ ] Calculate the code coverage (M16)
-* [ ] Get some continuous integration running on the GitHub repository (M17)
-* [ ] Add caching and multi-os/python/pytorch testing to your continuous integration (M17)
-* [ ] Add a linting step to your continuous integration (M17)
-* [ ] Add pre-commit hooks to your version control setup (M18)
+* [x] Get some continuous integration running on the GitHub repository (M17)
+* [x] Add caching and multi-os/python/pytorch testing to your continuous integration (M17)
+* [x] Add a linting step to your continuous integration (M17)
+* [x] Add pre-commit hooks to your version control setup (M18)
 * [ ] Add a continues workflow that triggers when data changes (M19)
 * [ ] Add a continues workflow that triggers when changes to the model registry is made (M19)
-* [ ] Create a data storage in GCP Bucket for your data and link this with your data version control setup (M21)
-* [ ] Create a trigger workflow for automatically building your docker images (M21)
+* [x] Create a data storage in GCP Bucket for your data and link this with your data version control setup (M21)
+* [x] Create a trigger workflow for automatically building your docker images (M21)
 * [ ] Get your model training in GCP using either the Engine or Vertex AI (M21)
-* [ ] Create a FastAPI application that can do inference using your model (M22)
-* [ ] Deploy your model in GCP using either Functions or Run as the backend (M23)
-* [ ] Write API tests for your application and setup continues integration for these (M24)
-* [ ] Load test your application (M24)
+* [x] Create a FastAPI application that can do inference using your model (M22)
+* [x] Deploy your model in GCP using either Functions or Run as the backend (M23)
+* [x] Write API tests for your application and setup continues integration for these (M24)
+* [x] Load test your application (M24)
 * [ ] Create a more specialized ML-deployment API using either ONNX or BentoML, or both (M25)
-* [ ] Create a frontend for your API (M26)
+* [x] Create a frontend for your API (M26)
 
 ### Week 3
 
-* [ ] Check how robust your model is towards data drifting (M27)
+* [x] Check how robust your model is towards data drifting (M27)
 * [ ] Setup collection of input-output data from your deployed application (M27)
-* [ ] Deploy to the cloud a drift detection API (M27)
+* [x] Deploy to the cloud a drift detection API (M27) (An attempt was made failed due to permissions)
 * [ ] Instrument your API with a couple of system metrics (M28)
 * [ ] Setup cloud monitoring of your instrumented application (M28)
 * [ ] Create one or more alert systems in GCP to alert you if your app is not behaving correctly (M28)
-* [x] If applicable, optimize the performance of your data loading using distributed data loading (M29) - **Arham Aziz Noman (s250173)**
-* [x] If applicable, optimize the performance of your training pipeline by using distributed training (M30) - **Arham Aziz Noman (s250173)**
+* [ ] If applicable, optimize the performance of your data loading using distributed data loading (M29)
+* [ ] If applicable, optimize the performance of your training pipeline by using distributed training (M30)
 * [ ] Play around with quantization, compilation and pruning for you trained models to increase inference speed (M31)
 
 ### Extra
 
 * [x] Write some documentation for your application (M32) - **Arham Aziz Noman (s250173)**
 * [ ] Publish the documentation to GitHub Pages (M32)
-* [ ] Revisit your initial project description. Did the project turn out as you wanted?
-* [ ] Create an architectural diagram over your MLOps pipeline
+* [x] Revisit your initial project description. Did the project turn out as you wanted?
+* [x] Create an architectural diagram over your MLOps pipeline
 * [ ] Make sure all group members have an understanding about all parts of the project
 * [x] Uploaded all your code to GitHub
 
@@ -134,7 +134,7 @@ MLOps 49
 >
 > Answer:
 
-s250219,s250173,s250155,s250269,
+s250219, s250201, s250269, s250173, s250155
 
 ### Question 3
 > **Did you end up using any open-source frameworks/packages not covered in the course during your project? If so**
@@ -163,7 +163,7 @@ Yes, the way our API functioned revolves around, scraping text from a stock mark
 > **through to get an exact copy of your environment.**
 > Answer:
 
-We managed dependencies with uv, using pyproject.toml as the single source of declared runtime + dev dependencies and uv.lock to pin exact versions for reproducibility.
+We managed dependencies with uv, using `pyproject.toml` as the main file for declaring both runtime and development dependencies, and `uv.lock` to pin exact versions for reproducibility. For a new team member, the setup is straightforward: clone the repository, install uv, and run `uv sync` in the project directory. This will automatically recreate the exact environment, ensuring consistency across all machines.
 
 A new team member would:
 1. Clone the repository
@@ -198,14 +198,7 @@ The key folders we maintained and utilized:
 > **explain with your own words why these concepts matters in larger projects.**
 > Answer:
 
-We implemented PEP8 compliance using linting tools, included type hints throughout the codebase, and documented essential parts of our code.
-
-These concepts are critical in larger projects because:
-- **Typing** enables early error detection and improves IDE support, making refactoring safer
-- **Code formatting & linting** ensures consistency across the team and reduces friction during code reviews
-- **Documentation** reduces onboarding time and helps future maintainers understand design decisions
-
-For example, type hints make function contracts explicit (`def load_data(path: str) -> torch.Tensor`), allowing tools to catch bugs before runtime.
+We used Ruff for both linting and formatting, configured with a line length of 120 characters in our `pyproject.toml`. For static type checking we used mypy with strict settings enabled. Documentation is built using MkDocs with the mkdocstrings-python plugin, allowing us to auto-generate API docs from docstrings. These concepts matter in larger projects because they ensure consistency across multiple contributors and reduce bugs. Linting catches style violations and potential errors early, while consistent formatting eliminates bikeshedding in code reviews. Typing enables IDE autocompletion, makes refactoring safer, and catches type mismatches before runtime. Documentation helps new team members onboard quickly and serves as a reference for API usage. For example, typing function parameters like `agreement: Literal["AllAgree", "75Agree"]` makes the API self-documenting and prevents invalid inputs at development time rather than in production.
 
 ## Version control
 
@@ -231,7 +224,13 @@ These tests focus on the most critical parts of our pipeline: ensuring data inte
 > **to), would you still trust it to be error free? Explain you reasoning.**
 > Answer:
 
-While we did not calculate 100% code coverage, achieving 100% coverage would not guarantee error-free code. High coverage means we've tested most code paths, but coverage doesn't measure test quality. We could have 100% coverage with ineffective tests that don't validate correctness. Additionally, coverage doesn't catch logic errors, integration issues, or edge cases that weren't anticipated. A more meaningful metric is test quality and ensuring critical paths are thoroughly tested.
+We measured coverage with `pytest-cov`. Current total: **13%** (179 statements, 156 missed).
+
+Key gaps: `src/project/backend.py` (18%), `src/project/inference/inference.py` (3%), `src/project/inference/retrieval.py` (28%). Tests were deprioritised and many paths use external I/O (wandb, artifact download, torch.load) and need mocking.
+
+```bash
+uv run pytest -- --cov=src/project --cov-report=term-missing
+```
 
 ### Question 9
 
@@ -240,11 +239,7 @@ While we did not calculate 100% code coverage, achieving 100% coverage would not
 
 > Answer:
 
-We made use of branches and PRs in our project. Each team member worked on separate feature branches, and changes were merged to main only after code review and passing CI checks. This approach:
-- Prevents conflicts and allows parallel development
-- Enables code review before merging
-- Ensures only tested code reaches production
-- Maintains a clean git history
+We used branches and pull requests minimally for feature development. Since team members worked at different time intervals with little overlap, we rarely had concurrent changes to the same files, making feature branches less essential for our workflow. However, we did use Dependabot for automated dependency updates, which created around 17 branches with corresponding pull requests to keep our packages up to date. This demonstrated the value of PRs for version control: branches allow isolated changes without affecting the main codebase, reducing the risk of breaking changes. Pull requests enable code review before merging, catching bugs and ensuring code quality. They also create a documented history of why changes were made. Additionally, PRs integrate well with CI pipelines, automatically running tests before code is merged, preventing regressions from reaching production.
 
 ### Question 10
 
@@ -253,16 +248,7 @@ We made use of branches and PRs in our project. Each team member worked on separ
 
 > Answer:
 
-Yes, we implemented DVC for managing data versioning. We tracked:
-- `data/raw/Sentences_AllAgree.txt` (raw dataset)
-- `data/processed/phrasebank_AllAgree.pt` (processed PyTorch tensors)
-- `models/text_model_AllAgree.pt` (trained model)
-
-This improved our project by:
-- Enabling reproducible model training from specific dataset versions
-- Preventing large binary files in Git while maintaining version history
-- Allowing easy switching between data versions for experiments
-- Supporting data lineage tracking
+We used DVC for data versioning with a Google Cloud Storage bucket as our remote storage. This was especially convenient because we didn't have to commit large data files or model checkpoints to Git—instead, we tracked `.dvc` files and used `dvc pull` to fetch the actual data when needed. We version-controlled our raw data (`Sentences_AllAgree.txt`), processed data (`phrasebank_AllAgree.pt`), and trained model (`text_model_AllAgree.pt`). When deploying our model inference on Google Cloud Run, we integrated DVC directly into our Docker images: the backend dockerfile copies the `.dvc` tracking files and runs `dvc pull` during the build process, using a service account secret key to authenticate with GCS. This allowed the container to automatically pull the correct data version without embedding large files in the image, keeping our images lightweight and ensuring reproducibility across environments.
 
 ### Question 11
 
@@ -297,9 +283,7 @@ The CI validates that:
 > **run a experiment.**
 > Answer:
 
-We used Hydra for experiment configuration via YAML files. Our setup includes:
-- `configs/config.yaml` - Main experiment configuration
-- `configs/sweep.yaml` - Hyperparameter sweep configuration
+We used Hydra for experiment configuration via YAML files, loaded internally using `initialize()` and `compose()`. Our setup includes `configs/config.yaml` for main configuration and `configs/sweep.yaml` for hyperparameter sweeps. The CLI is built with Typer, allowing command-line overrides.
 
 Example run: uv run train training.lr=0.01 training.batch_size=32
 
@@ -350,7 +334,10 @@ We developed multiple Docker images for different stages of the pipeline:
 Example training run:
 ```bash
 docker build -f dockerfiles/train.dockerfile -t project-train .
-docker run project-train --config-name config learning_rate=1e-3
+```
+Because we didnt have time to set a key to automatically log into the wandb we decided to disable it for the purpose of this report.
+```bash
+docker run -e WANDB_MODE=disabled project-train --epochs 3 --lr 1e-3 --batch-size 32
 ```
 
 Dockerization ensures:
@@ -366,12 +353,7 @@ Dockerization ensures:
 
 Debugging approach: We used VS Code debugger for interactive debugging, print statements for quick diagnostics, and pytest `-vv` flag for test failures.
 
-Profiling: We profiled our data loading pipeline with Python's `cProfile` and identified that:
-- I/O operations were the bottleneck (not model training)
-- Optimized batch loading and implemented parallel data loading
-- Achieved 3-5x speedup in data pipeline
-
-This profiling-driven optimization was essential for cloud cost reduction.
+Profiling: We implemented a dedicated profiling module (`src/project/profiling.py`) using PyTorch Profiler. This module provides a context manager `torch_profile()` that records CPU/CUDA operations, memory usage, and exports TensorBoard traces. We integrated it into our evaluation pipeline (`evaluate.py`) and can enable it via environment variable: `$env:TORCH_PROFILER="1"`. The profiler outputs tables showing time spent per operation and memory allocation, helping identify bottlenecks in our inference pipeline.
 
 ## Working in the cloud
 
@@ -387,11 +369,12 @@ This profiling-driven optimization was essential for cloud cost reduction.
 
 We used the following GCP services:
 
-- **Cloud Storage (Buckets)** - Storing raw/processed data and model artifacts
-- **Artifact Registry** - Storing Docker images for training and inference
-- **Cloud Build** - Automated docker image building on code push
-- **Cloud Run** - Serverless deployment of FastAPI application
-- **Compute Engine** - (Optional) For larger training jobs
+- **Cloud Storage (Buckets)** - Storing raw/processed data and model artifacts.
+- **Artifact Registry** - Storing Docker images for training and inference. Specifically we uploaded the backend and frontend images.
+- **Cloud Build** - Automated docker image building on code push for backend and frontend images.
+- **Cloud Run** - Serverless deployment of FastAPI application as well as for the streamlit deployment of the inference. You can see it here: https://streamlit-frontend-314998984110.europe-north2.run.app/
+
+I recommend using this to test inference: https://finance.yahoo.com/news/stock-market-sounds-alarm-investors-083500308.html?guccounter=1
 
 These services provide a complete ML ops infrastructure from data storage to model serving.
 
@@ -402,11 +385,7 @@ These services provide a complete ML ops infrastructure from data storage to mod
 
 > Answer:
 
-We did not extensively use the Compute Engine for training because our model was relatively small (text classification on limited dataset) and data volume was modest. However, the infrastructure was configured to use:
-- 2-4 vCPU instances for training
-- Standard machine types (n1-standard-2 or n1-standard-4)
-- Custom training containers from Artifact Registry
-- Persistent storage mounted from Cloud Storage buckets
+We did not use the Compute Engine for training because our model was relatively small (text classification on limited dataset) and data volume was modest.
 
 ### Question 19
 
@@ -415,11 +394,9 @@ We did not extensively use the Compute Engine for training because our model was
 >
 > Answer:
 
-[Image placeholder - would show Cloud Storage bucket structure with:
-- `raw/Sentences_AllAgree.txt` - Original dataset
-- `processed/phrasebank_AllAgree.pt` - Preprocessed tensors
-- `models/text_model_AllAgree.pt` - Trained model weights
-- Version metadata from DVC integration]
+![GCP Bucket](figures/bucket.png)
+
+We used a Google Cloud Storage bucket (`mlops-group49-bucket`) to store our data and model artifacts, integrated with DVC for version control. The bucket contains our raw dataset (`Sentences_AllAgree.txt`), processed tensors (`phrasebank_AllAgree.pt`), and trained model checkpoints (`text_model_AllAgree.pt`).
 
 ### Question 20
 
@@ -428,11 +405,9 @@ We did not extensively use the Compute Engine for training because our model was
 >
 > Answer:
 
-[Image placeholder - would show Docker images stored:
-- `train:v1.0`, `train:latest` - Training pipeline images
-- `backend:v1.0`, `backend:latest` - API serving images
-- `drift-detector:v1.0` - Drift monitoring service
-- Build timestamps and image sizes]
+![GCP Artifact Registry](figures/artifact.png)
+
+We stored two Docker images in our GCP Artifact Registry: `gcp_test_app` (our FastAPI backend for model inference) and `streamlit_frontend` (our web interface for users to interact with the sentiment analysis model).
 
 ### Question 21
 
@@ -441,11 +416,9 @@ We did not extensively use the Compute Engine for training because our model was
 >
 > Answer:
 
-[Image placeholder - would show build logs:
-- Automated builds triggered on GitHub pushes
-- Build status (success/failure)
-- Build duration and resource usage
-- Links to built images in Artifact Registry]
+![GCP Cloud Build](figures/cloud_build.png)
+
+We managed to automate the Cloud Build flow to automatically build Docker images on code pushes. However, we encountered an issue with DVC authentication inside the Cloud Build environment—the build process couldn't authenticate with our GCS bucket to pull data/model files. We attempted to add a secret key to GitHub for authentication, but ran out of time to fully resolve this. As a workaround, we uploaded a checkpoint of the trained model directly to the repository so that Cloud Build could include it in the image without needing to pull from DVC.
 
 ### Question 22
 
@@ -477,18 +450,14 @@ We did not require cloud training because our model is lightweight and trains qu
 >
 > Answer:
 
-We implemented a FastAPI application that:
-- Accepts text input for sentiment classification
-- Returns sentiment predictions with confidence scores
-- Includes web scraping for fetching articles (via `Newspaper4k`)
-- Has multiple endpoints for prediction and health checks
+We implemented a FastAPI application (`src/project/backend.py`) with the following features:
+- Accepts a URL to a financial news article as input
+- Scrapes the article content using Newspaper4k
+- Runs sentiment classification on extracted sentences
+- Returns overall sentiment, sentiment distribution, and per-sentence predictions
 
-Example:
-```bash
-curl -X POST "http://localhost:8000/predict" -H "Content-Type: application/json" -d '{"text": "This stock is performing well"}'
-```
+The API has three endpoints: `/` and `/health` for health checks, and `/analyze` for inference. We used Pydantic models (`InferenceRequest`, `AnalysisResponse`) for request/response validation with proper typing. The API also includes GCS logging for drift detection—each inference request is logged as JSON to a Cloud Storage bucket for later analysis. Auto-generated Swagger documentation is available at `/docs`.
 
-We added Swagger documentation and input validation for robustness.
 
 ### Question 24
 
@@ -504,16 +473,16 @@ We added Swagger documentation and input validation for robustness.
 >
 > Answer:
 
-We deployed our FastAPI application using Cloud Run:
-- Wrapped the model in a FastAPI container
-- Successfully tested locally with `uvicorn`
-- Deployed to Cloud Run with automatic scaling
-- Users invoke the service via HTTP:
-  ```bash
-  curl -X POST "https://<cloud-run-url>/predict" -H "Content-Type: application/json" -d '{"text": "sentiment text"}'
-  ```
+We deployed our FastAPI application using Cloud Run. We wrapped the model in a FastAPI container and successfully tested locally with `uvicorn`. The API is deployed at: https://simple-gcp-app-314998984110.europe-north2.run.app/
 
-Cloud Run provided serverless deployment with zero-management scaling.
+The API accepts a URL to a financial article, scrapes the content using Newspaper4k, and returns sentiment analysis results. Users invoke the `/analyze` endpoint via HTTP:
+```bash
+curl -X POST "https://simple-gcp-app-314998984110.europe-north2.run.app/analyze" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://finance.yahoo.com/news/stock-market-sounds-alarm-investors-083500308.html?guccounter=1"}'
+```
+
+The response includes overall sentiment, sentiment distribution, and per-sentence predictions. Cloud Run provides serverless deployment with automatic scaling and zero infrastructure management.
 
 ### Question 25
 
@@ -549,17 +518,9 @@ For load testing, we utilized `locust` to simulate traffic. We defined a `locust
 >
 > Answer:
 
-We implemented a drift detection monitoring service that:
-- Logs recent inference inputs to a database
-- Compares incoming data distributions to training/validation reference sets
-- Uses statistical tests (e.g., Kolmogorov-Smirnov) to detect distribution shifts
-- Produces alerts when drift exceeds a threshold
-- Generates drift reports suggesting potential retraining
+We did not implement full monitoring for our deployed model. However, monitoring would significantly help the longevity of our application. With monitoring, we could track metrics such as request latency, error rates, and prediction confidence scores over time. This would inform us about degradation in model performance or unexpected API behavior.
 
-This monitoring helps:
-- Catch when model performance may degrade due to input changes
-- Alert engineers to investigate data shifts
-- Trigger automated retraining workflows
+A simple approach we could have taken: use Cloud Run's built-in metrics (request count, latency, CPU/memory usage) visible in GCP Console, and set up alerts when error rates exceed a threshold. For model-specific monitoring, we could have added a simple endpoint that logs prediction distributions to Cloud Storage, then periodically compared these against our training distribution to detect drift. Even basic logging of prediction counts per sentiment class would help identify if the model starts behaving unexpectedly.
 
 ## Overall discussion of project
 
@@ -599,8 +560,6 @@ Overall cloud experience: Cloud storage was the most expensive one and we used i
 > Answer:
 
 We implemented an additional drift detection component to monitor whether incoming inference data starts to differ from the data our model was trained/validated on. The drift detector logs recent input batches and compares them to a fixed reference dataset (training/validation split) using statistical drift tests and summary metrics (e.g. overall drift score). When drift exceeds a chosen threshold, the system produces a small report (and can be used to trigger an alert or retraining decision). We added this because our application relies on scraped financial news text, where the input distribution can change over time (new topics, writing style, market events), and undetected drift can degrade model performance without obvious errors. The drift module is intended as a lightweight monitoring step that helps us catch data changes early and make the deployment more robust.
-
-
 
 ### Question 29
 
@@ -645,15 +604,11 @@ The figure illustrates our automated MLOps workflow, flowing from local developm
 >
 > Answer:
 
-The biggest challenges in the project involved GCP permissions and service configuration. Setting up proper IAM roles for Cloud Build, Artifact Registry, and Cloud Run required careful permissions management. Additionally, initial debugging of Docker container issues locally before cloud deployment took significant time.
+The biggest challenges in the project involved GCP permissions and service configuration. Setting up proper IAM roles for Cloud Build, Artifact Registry, and Cloud Run required careful permissions management, and debugging authentication issues took significant time.
 
-We spent considerable time on:
-1. **Data loading optimization** - Profiling and implementing parallel data loading achieved 3-5x speedup
-2. **DVC integration** - Understanding DVC workflows and remote storage setup
-3. **API design & testing** - Ensuring API robustness with proper error handling and validation
-4. **Drift detection implementation** - Designing statistically sound drift detection with appropriate thresholds
+Another challenge was that although we mostly worked separately, several team members were not familiar with resolving Git merge conflicts, so additional time was needed to resolve these when they occurred. We also faced multiple issues getting DVC to work correctly due to some initial configuration mistakes—understanding the workflow between `.dvc` files, remote storage, and `dvc pull/push` commands required trial and error.
 
-Our solutions involved reading documentation thoroughly, using community forums, and extensive testing in isolated environments before cloud deployment.
+We overcame these challenges through communication and delegation. For GCP-related tasks, we decided that only one person would handle cloud infrastructure setup, and everyone else would delegate their cloud-related tasks to that person. This avoided permission conflicts and ensured consistent configuration. For Git conflicts, we took time to walk through the resolution process together when issues arose. For DVC, we documented our setup steps and shared them with the team once we got it working correctly.
 
 ### Question 31
 
@@ -671,14 +626,12 @@ Our solutions involved reading documentation thoroughly, using community forums,
 > *We have used ChatGPT to help debug our code. Additionally, we used GitHub Copilot to help write some of our code.*
 > Answer:
 
+*Student s250201 was in charge of wrapping the existing training code with PyTorch Lightning to remove boilerplate and standardize experiments (M15). They implemented the FastAPI web service that exposes the model for users and handles inference requests (M22). They set up and maintained CI/CD pipelines and quality tooling, including GitHub Actions workflows and pre-commit hooks to ensure tests and linters run automatically (M17/M18/M19). They created automated Docker build triggers for continuous image builds on code push (M21). They also developed the frontend and deployment stack—building a basic Streamlit UI and deploying the model to Cloud Run (M25/M26). Additionally, they resolved difficult merge conflicts across branches and acted as the primary person for Google Cloud permissions and IAM setup, coordinating service accounts, Cloud Build, Artifact Registry, and Cloud Run access.
+
 *Student s250269 was responsible for the core project infrastructure and cloud setup. This involved initializing the Git repository and managing environments with uv (M2, M5), implementing CLIs for reproducible script execution (M9), and configuring Hydra for hyperparameter management (M11). They also handled the containerization of the application by building Docker images for training and inference (M10) and set up the Google Cloud Storage bucket for DVC remote storage (M21).
 
 *Student s250173 was in charge of developing the core ML pipeline including data loading (`data.py`), model architecture (`model.py`), and training procedures (`train.py`). Implemented PEP8 compliance and type hints throughout the codebase. Set up initial DVC for data versioning and processed dataset tracking. Wrote comprehensive unit tests for data loading and model output validation. Optimized data pipeline performance for distributed data loading achieving 3-5x speedup. Documented the technical architecture and model design decisions.
 
-*Student s250269 was responsible for the core project infrastructure and cloud setup. This involved initializing the Git repository and managing environments with uv (M2, M5), implementing CLIs for reproducible script execution (M9), and configuring Hydra for hyperparameter management (M11). They also handled the containerization of the application by building Docker images for training and inference (M10) and set up the Google Cloud Storage bucket for DVC remote storage (M21).
-
 *Student s250155 was responsible for implementing CI/CD workflows with multi-OS and multi-Python testing, setting up pre-commit hooks, configuring code quality tools (Ruff, mypy), writing unit tests for data and model components, creating load testing framework with Locust, and documenting the deployment process and testing strategies.
 
-All members contributed to code reviews via pull requests, API development and testing, Docker containerization, and GCP cloud infrastructure setup.
-
-We have used GitHub Copilot to help accelerate code writing and ChatGPT for debugging cloud configuration issues.
+We have used GitHub Copilot to help accelerate code writing for most of the scripts, boilerplate code. Gemini was essential to navigate google cloud and set up the necessary permissions it would have been extremely difficult without its assistance. Other than some of the documentation and answers for the report were parsed with AI to clear errors.
