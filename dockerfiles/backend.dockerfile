@@ -8,7 +8,7 @@ COPY LICENSE LICENSE
 COPY README.md README.md
 COPY data/raw data/raw
 COPY data/processed data/processed
-COPY model models
+COPY models models
 
 RUN uv sync --frozen --no-install-project
 
