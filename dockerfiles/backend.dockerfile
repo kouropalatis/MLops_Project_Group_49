@@ -1,22 +1,21 @@
 FROM python:3.12-slim AS base
 
-RUN pip install uv
+RUN pip install uv && apt-get update && apt-get install -y git
 
 COPY uv.lock uv.lock
 COPY pyproject.toml pyproject.toml
 COPY LICENSE LICENSE
 COPY README.md README.md
-COPY .git .git
 COPY .dvc .dvc
-COPY data/raw data/raw
-COPY data/processed data/processed
-COPY models models
 
 RUN uv sync --frozen --no-install-project
 
 COPY src src/
 
 RUN uv sync --frozen
+
+# Initialize git so DVC works (needed for dvc pull)
+RUN git init && git config user.email "docker@build" && git config user.name "Docker Build"
 
 RUN uv run dvc pull
 
