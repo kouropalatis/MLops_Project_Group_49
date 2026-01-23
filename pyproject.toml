@@ -47,6 +47,7 @@ dependencies = [
     "torchmetrics>=1.0.0",
     "sentence-transformers>=5.2.0",
     "evidently>=0.7.20",
+    "loguru>=0.7.3",
 ]
 
 [project.scripts]

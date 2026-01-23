@@ -109,7 +109,7 @@ will check the repositories and the code to verify your answers.
 
 ### Extra
 
-* [x] Write some documentation for your application (M32) - **Arham Aziz Noman (s250173)**
+* [x] Write some documentation for your application (M32)
 * [ ] Publish the documentation to GitHub Pages (M32)
 * [x] Revisit your initial project description. Did the project turn out as you wanted?
 * [x] Create an architectural diagram over your MLOps pipeline
@@ -226,7 +226,8 @@ These tests focus on the most critical parts of our pipeline: ensuring data inte
 
 We measured coverage with `pytest-cov`. Current total: **13%** (179 statements, 156 missed).
 
-Key gaps: `src/project/backend.py` (18%), `src/project/inference/inference.py` (3%), `src/project/inference/retrieval.py` (28%). Tests were deprioritised and many paths use external I/O (wandb, artifact download, torch.load) and need mocking.
+Key gaps: `src/project/backend.py` (18%), `src/project/inference/inference.py` (3%), `src/project/inference/retrieval.py` (28%). Tests were deprioritised and many paths use external I/O (wandb, artifact download, torch.load) and need mocking. Regardless even if we reached 100% code coverage,
+it still wouldnt necessary that the code is error free. The tests can only go as far as their quality not their quantity. Until the middle phase of development we kept a steady 60% which seemed enough to give a reasonable error prevention. It seems with large team (we are a team of 5) ensuring everyone keeps the tests up to date is difficult.
 
 ```bash
 uv run pytest -- --cov=src/project --cov-report=term-missing
@@ -258,19 +259,28 @@ We used DVC for data versioning with a Google Cloud Storage bucket as our remote
 
 > Answer:
 
-We have organized our continuous integration using GitHub Actions workflows (visible in `.github/workflows/`).
+Our continuous integration is managed with GitHub Actions, with workflows defined in `.github/workflows/`:
 
-Our CI pipeline includes:
-- **Unit testing** - `pytest` runs `test_data.py`, `test_model.py`, `test_api.py`
-- **Linting & formatting** - Code quality checks on each commit
-- **Multi-environment testing** - Tests run across Python 3.9+ and multiple OS
-- **Dependency caching** - We cache pip/uv dependencies to speed up workflows
+- **Unit testing** ([tests.yaml]): Runs `pytest` on all main test files (`test_data.py`, `test_model.py`, `test_api.py`, etc.) for every push and pull request to `main`. This workflow uses a matrix to test across multiple operating systems (Ubuntu, Windows, macOS) and Python versions (3.11, 3.12), ensuring our code is robust and portable. Coverage is also measured in this workflow.
 
-The CI validates that:
-1. All tests pass
-2. Code meets style standards
-3. Dependencies are correctly specified
-4. Docker images build successfully
+- **Linting & formatting** ([linting.yaml]): Checks code quality and formatting using Ruff on every push and pull request. This ensures compliance with PEP8 and our custom style rules. The workflow installs dependencies with `uv` and runs `ruff check .` to catch lint and formatting issues early.
+
+- **Pre-commit auto-update** ([pre-commit-update.yaml]): Automatically updates pre-commit hooks on a schedule and via manual dispatch, creating pull requests with updated hook versions. This keeps our code quality tools up to date without manual intervention.
+
+- **Dependency caching**: Both the testing and linting workflows use dependency caching for `uv` and Python packages, significantly speeding up CI runs.
+
+**Key features of our CI setup:**
+1. All tests are run on every push and pull request, across multiple OS and Python versions.
+2. Linting and formatting are enforced automatically.
+3. Pre-commit hooks are kept up to date via automation.
+4. Dependency caching is used to optimize workflow speed.
+
+Example workflow files:
+- `.github/workflows/tests.yaml`: Unit/matrix testing
+- `.github/workflows/linting.yaml`: Linting & formatting
+- `.github/workflows/pre-commit-update.yaml`: Pre-commit hook updates
+
+This setup ensures our codebase remains reliable, consistent, and easy to maintain as the project evolves.
 
 ## Running code and tracking experiments
 
@@ -298,9 +308,9 @@ This allows flexible parameter overriding from command line (using dot notation 
 
 We secured reproducibility through multiple mechanisms:
 
-1. **Config files** - All hyperparameters stored in YAML, no hardcoding
+1. **Config files** - All hyperparameters stored in YAML, no hardcoding allowing us to use the exact same parameters across the team with ease.
 2. **DVC** - Data and model versioning with `.dvc` files
-3. **Weights & Biases** - Every experiment run logs configurations, metrics, and artifacts
+3. **Weights & Biases** - Every experiment run logs configurations, metrics, and artifacts. This way we ensure every expirement is easily reproducible.
 4. **Random seeds** - Fixed seeds for PyTorch and NumPy in training scripts
 5. **Environment pinning** - `uv.lock` ensures exact dependency versions
 
@@ -316,6 +326,17 @@ To reproduce an experiment: Check W&B for the run's config, retrieve the exact d
 > Answer:
 As seen in ![Charts](figures/wandb_charts.png) we track how epoch, loss and other hyperparameters are affecting the accuracy of our model. We also track the accuracy of our model over the course of training.
 As seen in ![Diagram_fig](figures/Multicol_diagram.png) and ![Parameter importance_fig](figures/Parameter_importance.png), we tracked which combination of hyperparameters led to the best model, given the goal to minimize validation loss.
+
+Detailed Explanation:
+To select the best model configurations we monitored a set of core metrics across hyperparameter sweep runs:
+
+- Training loss: Tracked to ensure the optimizer reduces error. A steady downward trend in the loss chart indicates successful convergence.
+- Validation accuracy: Our primary performance metric — used to compare configurations and detect diminishing returns as training progresses.
+- Epochs vs. steps: Recording progress by epoch/step ensures fair comparisons between runs and helps spot overfitting or premature stopping.
+
+Hyperparameter visualization: the Parallel Coordinates plot (bottom image) reveals high-dimensional relationships between parameters and outcomes. We specifically inspected learning rate and batch size against validation loss to identify "paths to success" (for example, clusters where a lower learning rate combined with a certain batch size produced more stable, lower validation loss).
+
+This approach moves model selection beyond trial-and-error by highlighting promising hyperparameter regions and guiding focused follow-up experiments.
 
 ### Question 15
 
@@ -353,7 +374,8 @@ Dockerization ensures:
 
 Debugging approach: We used VS Code debugger for interactive debugging, print statements for quick diagnostics, and pytest `-vv` flag for test failures.
 
-Profiling: We implemented a dedicated profiling module (`src/project/profiling.py`) using PyTorch Profiler. This module provides a context manager `torch_profile()` that records CPU/CUDA operations, memory usage, and exports TensorBoard traces. We integrated it into our evaluation pipeline (`evaluate.py`) and can enable it via environment variable: `$env:TORCH_PROFILER="1"`. The profiler outputs tables showing time spent per operation and memory allocation, helping identify bottlenecks in our inference pipeline.
+Profiling: We implemented a dedicated profiling module (`src/project/profiling.py`) using PyTorch Profiler. This module provides a context manager `torch_profile()` that records CPU/CUDA operations, memory usage, and exports TensorBoard traces. We integrated it into our evaluation pipeline (`evaluate.py`) and can enable it via environment variable: `$env:TORCH_PROFILER="1"`. The profiler outputs tables showing time spent per operation and memory allocation, helping identify bottlenecks in our inference pipeline. The code is definitely is not perfect and we were able to improve some parts
+in evaluate.py.
 
 ## Working in the cloud
 
@@ -420,6 +442,9 @@ We stored two Docker images in our GCP Artifact Registry: `gcp_test_app` (our Fa
 
 We managed to automate the Cloud Build flow to automatically build Docker images on code pushes. However, we encountered an issue with DVC authentication inside the Cloud Build environment—the build process couldn't authenticate with our GCS bucket to pull data/model files. We attempted to add a secret key to GitHub for authentication, but ran out of time to fully resolve this. As a workaround, we uploaded a checkpoint of the trained model directly to the repository so that Cloud Build could include it in the image without needing to pull from DVC.
 
+Update: After upload the model checkpoint to github repo the build was finally completed successfully:
+![GCP Cloud Build](figures/cloud_build2.png)
+
 ### Question 22
 
 > **Did you manage to train your model in the cloud using either the Engine or Vertex AI? If yes, explain how you did**
@@ -482,7 +507,7 @@ curl -X POST "https://simple-gcp-app-314998984110.europe-north2.run.app/analyze"
   -d '{"url": "https://finance.yahoo.com/news/stock-market-sounds-alarm-investors-083500308.html?guccounter=1"}'
 ```
 
-The response includes overall sentiment, sentiment distribution, and per-sentence predictions. Cloud Run provides serverless deployment with automatic scaling and zero infrastructure management.
+The response includes overall sentiment, sentiment distribution, and per-sentence predictions. Cloud Run provides serverless deployment with automatic scaling and zero infrastructure management. For clear resuls we recommend using the front end API that we have pushed on cloud run.
 
 ### Question 25
 
@@ -501,9 +526,9 @@ The response includes overall sentiment, sentiment distribution, and per-sentenc
 For functional testing, we used `pytest` and `fastapi.testclient.TestClient` to verify our API endpoints. This allowed us to check for:
 - Correct response formats (JSON structure) and HTTP status codes (200 OK, etc.)
 - Accurate model predictions on known test cases
-- Proper error handling for invalid inputs
+- Proper error handling for invalid inputs and edge cases
 
-For load testing, we utilized `locust` to simulate traffic. We defined a `locustfile.py` to mimic user behavior and ran tests and check the performance. uv run locust -f tests/performancetests/locustfile.py --host http://localhost:8000. This confirmed our API is working locally.
+For load testing, we utilized `locust` to simulate traffic and assess performance under concurrent requests. We defined a `locustfile.py` to mimic user behavior and ran tests to check the system’s responsiveness and stability. The command uv run locust -f tests/performancetests/locustfile.py --host http://localhost:8000 was used. This confirmed our API is working locally and can handle multiple requests efficiently without errors.
 
 ### Question 26
 
@@ -539,9 +564,14 @@ A simple approach we could have taken: use Cloud Run's built-in metrics (request
 >
 > Answer:
 
-We used minimal cloud credits because:
-- Most development was local due to small model/data size
-- Cloud Run deployments for model inference
+Google cloud was great as a learning experience. However at times the management of prediction and with the time constraints of the course it felt like
+we were forced to ''vibe code'' our way into figuring out the permissions we needed instead of truly figuring out what each permission did and why it
+was important.
+
+In terms of cloud credits our use was basically minimal because:
+- Most development was local initially especially due to the small size of the model and the data (~600kb).
+- Cloud run deploymenets were used only for model inference since we didnt train the model on the cloud.
+- Uploading project images.
 
 Overall cloud experience: Cloud storage was the most expensive one and we used it for storing the dataset and images.
 
@@ -604,11 +634,13 @@ The figure illustrates our automated MLOps workflow, flowing from local developm
 >
 > Answer:
 
-The biggest challenges in the project involved GCP permissions and service configuration. Setting up proper IAM roles for Cloud Build, Artifact Registry, and Cloud Run required careful permissions management, and debugging authentication issues took significant time.
+The biggest challenges in the project involved GCP permissions and service configuration. Setting up proper IAM roles for Cloud Build, Artifact Registry, and Cloud Run required careful permissions management, and debugging authentication issues took significant time. Especially when running
+things in docker the need to set up authentication keys for all the services including but not limited to wandb, google cloud proved troublesome and
+we didnt have the time to properly do it.
 
 Another challenge was that although we mostly worked separately, several team members were not familiar with resolving Git merge conflicts, so additional time was needed to resolve these when they occurred. We also faced multiple issues getting DVC to work correctly due to some initial configuration mistakes—understanding the workflow between `.dvc` files, remote storage, and `dvc pull/push` commands required trial and error.
 
-We overcame these challenges through communication and delegation. For GCP-related tasks, we decided that only one person would handle cloud infrastructure setup, and everyone else would delegate their cloud-related tasks to that person. This avoided permission conflicts and ensured consistent configuration. For Git conflicts, we took time to walk through the resolution process together when issues arose. For DVC, we documented our setup steps and shared them with the team once we got it working correctly.
+We overcame most of these challenges through communication and delegation. For GCP-related tasks, we decided that only one person would handle cloud infrastructure setup, and everyone else would delegate their cloud-related tasks to that person. This avoided permission conflicts and ensured consistent configuration. For Git conflicts, we took time to walk through the resolution process together when issues arose. For DVC, we documented our setup steps and shared them with the team once we got it working correctly.
 
 ### Question 31
 
@@ -626,12 +658,14 @@ We overcame these challenges through communication and delegation. For GCP-relat
 > *We have used ChatGPT to help debug our code. Additionally, we used GitHub Copilot to help write some of our code.*
 > Answer:
 
-*Student s250201 was in charge of wrapping the existing training code with PyTorch Lightning to remove boilerplate and standardize experiments (M15). They implemented the FastAPI web service that exposes the model for users and handles inference requests (M22). They set up and maintained CI/CD pipelines and quality tooling, including GitHub Actions workflows and pre-commit hooks to ensure tests and linters run automatically (M17/M18/M19). They created automated Docker build triggers for continuous image builds on code push (M21). They also developed the frontend and deployment stack—building a basic Streamlit UI and deploying the model to Cloud Run (M25/M26). Additionally, they resolved difficult merge conflicts across branches and acted as the primary person for Google Cloud permissions and IAM setup, coordinating service accounts, Cloud Build, Artifact Registry, and Cloud Run access.
+s250201: Integrated PyTorch Lightning to reduce boilerplate and developed the FastAPI inference service. Managed CI/CD via GitHub Actions and automated Docker builds as well as  configured Ruff/mypy quality tools with precommit workflows. Deployed a Streamlit UI and the fastapi backend to Cloud Run (M25/M26), as well as the resolved complex merge conflicts, and led GCP IAM, Cloud Build, and Artifact Registry orchestration.
 
-*Student s250269 was responsible for the core project infrastructure and cloud setup. This involved initializing the Git repository and managing environments with uv (M2, M5), implementing CLIs for reproducible script execution (M9), and configuring Hydra for hyperparameter management (M11). They also handled the containerization of the application by building Docker images for training and inference (M10) and set up the Google Cloud Storage bucket for DVC remote storage (M21).
+s250219: Initialized the project via Cookiecutter and managed dependency setup. Spearheaded code profiling, Weights & Biases (WandB) integration, logging, hyperparameter optimization, and the data drift detection system.
 
-*Student s250173 was in charge of developing the core ML pipeline including data loading (`data.py`), model architecture (`model.py`), and training procedures (`train.py`). Implemented PEP8 compliance and type hints throughout the codebase. Set up initial DVC for data versioning and processed dataset tracking. Wrote comprehensive unit tests for data loading and model output validation. Optimized data pipeline performance for distributed data loading achieving 3-5x speedup. Documented the technical architecture and model design decisions.
+s250269: Established core infrastructure, including Git initialization and uv environment management (M2/M5). Implemented reproducible CLIs (M9) and Hydra configurations (M11). Handled containerization (M10) and configured Google Cloud Storage for DVC remote storage (M21).
 
-*Student s250155 was responsible for implementing CI/CD workflows with multi-OS and multi-Python testing, setting up pre-commit hooks, configuring code quality tools (Ruff, mypy), writing unit tests for data and model components, creating load testing framework with Locust, and documenting the deployment process and testing strategies.
+s250173: Developed the core ML pipeline (data, architecture, and training). Enforced PEP8 and type hints, initialized DVC for data versioning, and wrote unit tests for data/model validation. Optimized distributed data loading and documented technical design decisions.
 
-We have used GitHub Copilot to help accelerate code writing for most of the scripts, boilerplate code. Gemini was essential to navigate google cloud and set up the necessary permissions it would have been extremely difficult without its assistance. Other than some of the documentation and answers for the report were parsed with AI to clear errors.
+s250155: Engineered CI/CD workflows for multi-OS/Python testing. Developed unit tests and a Locust-based load testing framework. Documented deployment strategies and testing protocols.
+
+AI Usage: GitHub Copilot assisted with scripting and boilerplate. Gemini facilitated GCP cloud navigation and IAM setup. AI was also utilized to refine documentation and report accuracy.
