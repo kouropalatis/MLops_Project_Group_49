@@ -17,6 +17,9 @@ RUN uv sync --frozen
 # Initialize git so DVC works (needed for dvc pull)
 RUN git init && git config user.email "docker@build" && git config user.name "Docker Build"
 
+# Remove local config that causes issues in container
+RUN rm -f .dvc/config.local
+
 RUN uv run dvc pull
 
 EXPOSE 8080
