@@ -1,6 +1,7 @@
-# MLOps Project
+# MLOps: Financial News Sentiment Analysis
 
-An end-to-end MLOps pipeline for training, evaluating, and serving machine learning models.
+An end-to-end MLOps pipeline designed to **quantify market sentiment** from financial news articles.
+This project demonstrates a production-grade workflow for an NLP model that classifies financial texts as *Positive*, *Negative*, or *Neutral*, providing actionable signals for **algorithmic trading** and market analysis.
 
 ## Features
 
@@ -29,7 +30,7 @@ An end-to-end MLOps pipeline for training, evaluating, and serving machine learn
 │   ├── api.Dockerfile
 │   └── train.Dockerfile
 ├── docs/
-│   ├── mkdocs.yml
+│   ├── mkdocs.yaml
 │   └── source/
 │       └── index.md
 ├── models/                   # Trained model artifacts
@@ -39,7 +40,7 @@ An end-to-end MLOps pipeline for training, evaluating, and serving machine learn
 ├── src/
 │   └── project/
 │       ├── __init__.py
-│       ├── api.py
+│       ├── backend.py
 │       ├── data.py
 │       ├── evaluate.py
 │       ├── model.py
@@ -47,7 +48,7 @@ An end-to-end MLOps pipeline for training, evaluating, and serving machine learn
 │       └── visualize.py
 ├── tests/
 │   ├── __init__.py
-│   ├── test_api.py
+│   ├── test_backend.py
 │   ├── test_data.py
 │   └── test_model.py
 ├── .gitignore
@@ -61,6 +62,9 @@ An end-to-end MLOps pipeline for training, evaluating, and serving machine learn
 ```
 
 ## Getting Started
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/konstandinoseng/MLops_Project_Group_49)
+
 
 ### Clone the Repository
 
@@ -134,21 +138,41 @@ python src/project/evaluate.py
 ### API
 
 ```bash
-python src/project/api.py
+uv run fastapi dev src/project/backend.py
 ```
+
+### Frontend (User Interface)
+
+Open a new terminal and run:
+
+```bash
+uv run streamlit run src/project/frontend.py
+```
+
+```bash
+uv run streamlit run src/project/frontend.py
+```
+
+### 💡 Usage Guide
+
+Once the Frontend is running (usually at `http://localhost:8501`):
+1.  **Open the link** in your browser.
+2.  **Paste a URL** of a financial news article (e.g., from *Bloomberg*, *Reuters*, or *Yahoo Finance*).
+3.  Click **"Analyze"**.
+4.  The system will output the **Overall Sentiment** (Positive/Neutral/Negative) and highlight specific sentences that influenced the decision.
 
 ## Docker
 
 ### Build Training Image
 
 ```bash
-docker build -f dockerfiles/train.Dockerfile -t project-train .
+docker build -f dockerfiles/train.dockerfile -t project-train .
 ```
 
 ### Build API Image
 
 ```bash
-docker build -f dockerfiles/api.Dockerfile -t project-api .
+docker build -f dockerfiles/backend.dockerfile -t project-backend .
 ```
 
 ## Testing

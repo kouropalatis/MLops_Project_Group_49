@@ -29,7 +29,7 @@ GCS_BUCKET = os.getenv("GCS_BUCKET")
 GCS_PREFIX = os.getenv("GCS_PREFIX", "drift-logs")
 
 
-def _gcs_client() -> "storage.Client":  #type: ignore[name-defined]
+def _gcs_client() -> "storage.Client":  # type: ignore[name-defined]
     """Create a GCS client (requires google-cloud-storage)."""
     if storage is None:
         raise RuntimeError("google-cloud-storage is required for GCS logging")
@@ -47,8 +47,6 @@ def _log_json_to_gcs(payload: dict) -> None:
     object_name = f"{GCS_PREFIX}/inference/{timestamp}.json"
     blob = bucket.blob(object_name)
     blob.upload_from_string(json.dumps(payload), content_type="application/json")
-
-
 
 
 # Request Models

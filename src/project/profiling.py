@@ -21,7 +21,7 @@ class ProfilerConfig:
 
     # What to record
     record_shapes: bool = True
-    profile_memory: bool = True  # 
+    profile_memory: bool = True  #
     with_stack: bool = False  # optional: adds call stacks (more overhead)
 
     # Iterations: if want to profile a loop, call prof.step() each iteration

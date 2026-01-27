@@ -206,7 +206,7 @@ def run_inference(
     Returns:
         Analysis results
     """
-    #step 0: Fetch article text
+    # step 0: Fetch article text
     text = scrape_article(url)
     # Step 1: Retrieval - extract financial sentences
     sentences = extract_financial_sentences(text)
@@ -224,7 +224,6 @@ def run_inference(
 if __name__ == "__main__":
     # Example usage
     sample_url = "https://finance.yahoo.com/news/5-things-know-stock-market-131502868.html"
-
 
     # Run with local model
     result = run_inference(sample_url, model_path="models/text_model_AllAgree.pt")

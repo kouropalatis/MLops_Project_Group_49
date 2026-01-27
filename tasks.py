@@ -36,7 +36,9 @@ def docker_build(ctx: Context, progress: str = "plain") -> None:
         pty=not WINDOWS,
     )
     ctx.run(
-        f"docker build -t api:latest . -f dockerfiles/api.dockerfile --progress={progress}", echo=True, pty=not WINDOWS
+        f"docker build -t backend:latest . -f dockerfiles/backend.dockerfile --progress={progress}",
+        echo=True,
+        pty=not WINDOWS,
     )
 
 
@@ -56,4 +58,6 @@ def serve_docs(ctx: Context) -> None:
 @task
 def load_test(ctx: Context) -> None:
     """Run load tests using Locust."""
-    ctx.run("uv run locust -f tests/performancetests/locustfile.py --host http://127.0.0.1:8000", echo=True, pty=not WINDOWS)
+    ctx.run(
+        "uv run locust -f tests/performancetests/locustfile.py --host http://127.0.0.1:8000", echo=True, pty=not WINDOWS
+    )
